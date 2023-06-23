@@ -13,4 +13,8 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="myThemeNOActionBar" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="windowActionBar">false</item>
+    </style>
 </resources>

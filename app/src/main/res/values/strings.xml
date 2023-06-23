@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">YourPizza</string>
+    <string name="price"> <b>Price :</b> </string>
+    <string name="size"> <b>Size :</b> </string>
+    <string name="pizza"> Pizza</string>
+
 </resources>
