@@ -2,11 +2,11 @@ package com.example.yourpizza.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.yourpizza.R
+import com.example.yourpizza.view.fragments.HomeScreenFragment
+import com.example.yourpizza.view.fragments.MyCartFragment
 import com.example.yourpizza.viewmodels.MainViewModel
 
 class MainActivity : AppCompatActivity() {

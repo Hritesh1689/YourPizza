@@ -1,4 +1,4 @@
-package com.example.yourpizza.view
+package com.example.yourpizza.view.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

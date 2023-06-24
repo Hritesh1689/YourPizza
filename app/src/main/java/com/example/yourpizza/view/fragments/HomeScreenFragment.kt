@@ -1,4 +1,4 @@
-package com.example.yourpizza.view
+package com.example.yourpizza.view.fragments
 
 import android.app.AlertDialog
 import android.content.Context
@@ -17,7 +17,8 @@ import com.example.yourpizza.databinding.CrustsSelectorDialogBinding
 import com.example.yourpizza.databinding.HomeScreenBinding
 import com.example.yourpizza.databinding.SizeSelectorDialogBinding
 import com.example.yourpizza.models.Crust
-import com.example.yourpizza.models.Size
+import com.example.yourpizza.view.adapters.CrustItemAdapter
+import com.example.yourpizza.view.adapters.SizeItemAdapter
 import com.example.yourpizza.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 

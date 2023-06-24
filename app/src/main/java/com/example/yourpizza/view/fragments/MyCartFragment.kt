@@ -1,4 +1,4 @@
-package com.example.yourpizza.view
+package com.example.yourpizza.view.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.yourpizza.R
 import com.example.yourpizza.databinding.MyCartFragmentBinding
 import com.example.yourpizza.models.PizzaInCart
+import com.example.yourpizza.view.adapters.CartItemAdapter
 import com.example.yourpizza.viewmodels.MainViewModel
 
 class MyCartFragment : Fragment() {

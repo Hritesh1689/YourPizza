@@ -1,4 +1,4 @@
-package com.example.yourpizza.view
+package com.example.yourpizza.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.yourpizza.databinding.CartItemLayoutBinding
-import com.example.yourpizza.models.Crust
 import com.example.yourpizza.models.PizzaInCart
 import com.example.yourpizza.viewmodels.MainViewModel
 
