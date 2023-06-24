@@ -3,5 +3,9 @@
     <string name="price"> <b>Price :</b> </string>
     <string name="size"> <b>Size :</b> </string>
     <string name="pizza"> Pizza</string>
+    <string name="empty"> </string>
+    <string name="total_cost">TOTAL COST :</string>
+    <string name="qunatity"><b>Quantity :</b></string>
+
 
 </resources>
