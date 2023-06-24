@@ -71,7 +71,6 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@{ mainViewModel.pizzaResponseLiveData.isVeg ? @drawable/green_circle : @drawable/red_circle }"
             android:scaleType="fitCenter"
-            android:src="@drawable/default_image"
             android:text="@{mainViewModel.pizzaResponseLiveData.name}"
             android:textColor="@color/black"
             android:textSize="40sp"
