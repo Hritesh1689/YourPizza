@@ -17,20 +17,21 @@ import com.example.yourpizza.databinding.CrustsSelectorDialogBinding
 import com.example.yourpizza.databinding.HomeScreenBinding
 import com.example.yourpizza.databinding.SizeSelectorDialogBinding
 import com.example.yourpizza.models.Crust
-import com.example.yourpizza.view.adapters.CrustItemAdapter
-import com.example.yourpizza.view.adapters.SizeItemAdapter
+import com.example.yourpizza.models.Size
+import com.example.yourpizza.view.adapters.*
+import com.example.yourpizza.view.adapters.listeners.CrustItemListener
+import com.example.yourpizza.view.adapters.listeners.SizeItemListener
 import com.example.yourpizza.viewmodels.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
-class HomeScreenFragment : Fragment() {
+class HomeScreenFragment : Fragment(), SizeItemListener, CrustItemListener {
 
     var homeScreenBinding : HomeScreenBinding?=null
-    var bottomSheetDialog : BottomSheetDialog?=null
-    var alertDialog : AlertDialog ?=null
+    var sizeSelectorDialog : BottomSheetDialog?=null
+    var crustSelectorDialog : AlertDialog ?=null
     var mainViewModel : MainViewModel?=null
-//    var pizzaItemAdapter : PizzaItemAdapter?=null
-//    private var mLinearLayoutManager : LinearLayoutManager? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
@@ -48,6 +49,7 @@ class HomeScreenFragment : Fragment() {
         mainViewModel=ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
         homeScreenBinding!!.mainViewModel=mainViewModel
         homeScreenBinding!!.lifecycleOwner=this
+        homeScreenBinding!!.progressBar.visibility=View.VISIBLE
         init()
         setObservers()
         return homeScreenBinding?.root
@@ -59,26 +61,25 @@ class HomeScreenFragment : Fragment() {
         })
 
         mainViewModel?.getOpenSizeSelector()?.observe(viewLifecycleOwner, Observer {
+            if(it!=null)
                  openSizeSeletor(it)
         })
 
-        mainViewModel?.getCloseSizeSelector()?.observe(viewLifecycleOwner, Observer {
-            bottomSheetDialog!!.cancel()
+        mainViewModel?.getCloseCrustDialog()?.observe(viewLifecycleOwner, Observer {
+            crustSelectorDialog!!.cancel()
         })
     }
 
     private fun openSizeSeletor(list: Crust) {
-        bottomSheetDialog = BottomSheetDialog(requireContext())
+        sizeSelectorDialog = BottomSheetDialog(requireContext())
         val sizeSelectorDialogBinding : SizeSelectorDialogBinding = SizeSelectorDialogBinding.inflate(LayoutInflater.from(context),null,false)
-        bottomSheetDialog!!.setContentView(sizeSelectorDialogBinding.root)
+        sizeSelectorDialog!!.setContentView(sizeSelectorDialogBinding.root)
 
-        val layoutManager = LinearLayoutManager(context)
-        sizeSelectorDialogBinding.sizeRecyclerView.layoutManager = layoutManager
-
-        val adapter = SizeItemAdapter(activity, list.sizes, list.defaultSize)
+        val adapter = SizeItemAdapter(requireContext(),this, list.sizes, list.defaultSize)
+        sizeSelectorDialogBinding.sizeRecyclerView.layoutManager = LinearLayoutManager(context)
         sizeSelectorDialogBinding.sizeRecyclerView.adapter = adapter
 
-        bottomSheetDialog!!.show()
+        sizeSelectorDialog!!.show()
     }
 
     private fun openCrustSelector(crusts : List<Crust>) {
@@ -87,22 +88,16 @@ class HomeScreenFragment : Fragment() {
         crustSelectorDialogBinding.viewModel=mainViewModel
         crustSelectorDialogBinding.lifecycleOwner=this
 
-        crustSelectorDialogBinding.done.setOnClickListener(View.OnClickListener {
-             mainViewModel?.setTotalPizzaCounts()
-             alertDialog!!.cancel()
-        })
-
         val dialogView = crustSelectorDialogBinding.root
         dialogBuilder.setView(dialogView)
-        val recyclerView: RecyclerView = dialogView.findViewById(R.id.crust_recyclerView)
-        val layoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager = layoutManager
 
-        val adapter = CrustItemAdapter(activity,mainViewModel?.getPizzaList()?.value?.crusts!!, mainViewModel?.getPizzaList()?.value?.defaultCrust!!)
-        recyclerView.adapter = adapter
+        val adapter = CrustItemAdapter(requireContext(),this,
+            crusts as ArrayList<Crust>, mainViewModel?.getPizzaList()?.value?.defaultCrust!!)
+        crustSelectorDialogBinding.crustRecyclerView.layoutManager = LinearLayoutManager(context)
+        crustSelectorDialogBinding.crustRecyclerView.adapter = adapter
 
-        alertDialog = dialogBuilder.create()
-        alertDialog!!.show()
+        crustSelectorDialog = dialogBuilder.create()
+        crustSelectorDialog!!.show()
     }
 
     private fun init() {
@@ -110,7 +105,26 @@ class HomeScreenFragment : Fragment() {
     }
 
     private fun getPizzaListFromServer() {
-        mainViewModel?.getPizzaList()
+        mainViewModel?.getPizzaList()?.observe(viewLifecycleOwner, Observer {
+            homeScreenBinding!!.progressBar.visibility=View.GONE
+            mainViewModel?.setButtonEnableTrue()
+        })
+    }
+
+    override fun closeSizeSelector() {
+        sizeSelectorDialog?.cancel()
+    }
+
+    override fun setDefaultSize(crust: Crust) {
+        mainViewModel?.setDefaultSize(crust)
+    }
+
+    override fun setCurrentPrice(size: Size) {
+        mainViewModel?.setCurrentPrice(size)
+    }
+
+    override fun openSizeSelector(crust: Crust) {
+        mainViewModel?.openSizeSelector(crust)
     }
 
 }

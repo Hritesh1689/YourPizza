@@ -15,13 +15,14 @@ import com.example.yourpizza.R
 import com.example.yourpizza.databinding.MyCartFragmentBinding
 import com.example.yourpizza.models.PizzaInCart
 import com.example.yourpizza.view.adapters.CartItemAdapter
+import com.example.yourpizza.view.adapters.listeners.CartItemListener
 import com.example.yourpizza.viewmodels.MainViewModel
 
-class MyCartFragment : Fragment() {
+class MyCartFragment : Fragment() , CartItemListener {
     var myCartFragmentBinding : MyCartFragmentBinding?=null
     var mainViewModel : MainViewModel?=null
     var cartItemAdapter : CartItemAdapter?=null
-    private var mLinearLayoutManager : LinearLayoutManager? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
     }
@@ -44,9 +45,8 @@ class MyCartFragment : Fragment() {
     }
 
     private fun init() {
-        cartItemAdapter= CartItemAdapter(activity)
-        mLinearLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        myCartFragmentBinding?.cartRecycler?.layoutManager = mLinearLayoutManager
+        cartItemAdapter= CartItemAdapter(requireContext(),this)
+        myCartFragmentBinding?.cartRecycler?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         myCartFragmentBinding?.cartRecycler?.adapter=cartItemAdapter
 
 
@@ -58,6 +58,10 @@ class MyCartFragment : Fragment() {
             cartItemAdapter?.setPizzaList(it as ArrayList<PizzaInCart>)
             cartItemAdapter?.notifyDataSetChanged()
         })
+    }
+
+    override fun removePizzaFromCart(name: String, price: String, sizeName: String) {
+        mainViewModel?.removePizzaFromCart(name, price, sizeName)
     }
 
 }

@@ -2,10 +2,18 @@
     <string name="app_name">YourPizza</string>
     <string name="price"> <b>Price :</b> </string>
     <string name="size"> <b>Size :</b> </string>
-    <string name="pizza"> Pizza</string>
+    <string name="pizza"> \u0020Pizza</string>
     <string name="empty"> </string>
-    <string name="total_cost">TOTAL COST :</string>
+    <string name="total_cost">TOTAL COST : &#x20B9; </string>
     <string name="qunatity"><b>Quantity :</b></string>
+    <string name="remove">REMOVE</string>
+    <string name="choose_crust">CHOOSE CRUSTS</string>
+    <string name="done">DONE</string>
+    <string name="pizza_all_over">PIZZAS ARE ALL OVER</string>
+    <string name="get_customized_piiza">GET CUSTOMIZED PIZZA</string>
+    <string name="your_cart">YOUR CART</string>
+    <string name="choose_size">CHOOSE SIZE</string>
+    <string name="add_to_cart">ADD TO CART</string>
 
 
 </resources>

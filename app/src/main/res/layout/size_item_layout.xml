@@ -4,7 +4,7 @@
     <data>
         <variable
             name="size"
-            type="com.example.yourpizza.models.Size" />
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +21,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:textColor="@color/black"
             android:textSize="19sp"
-            android:text="@{size.name}"
+            android:text="@{size}"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

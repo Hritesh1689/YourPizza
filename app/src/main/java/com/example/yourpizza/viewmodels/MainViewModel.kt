@@ -12,22 +12,30 @@ import com.example.yourpizza.repositories.PizzaReposiory
 
 class MainViewModel() : ViewModel() {
 
+    // to handle the quantity of same custom pizza
     private var pizzHashMap : HashMap<String,PizzaInCart> = HashMap()
 
+    // to show all added pizza in my cart fragment
     private val pizzaAddedInCart :  MutableLiveData<List<PizzaInCart>> = MutableLiveData()
+
+    private val backPressed : MutableLiveData<Boolean> = MutableLiveData()
+    private val isButtonsEnabled : MutableLiveData<Boolean> = MutableLiveData()
+
+    private val closeCrustDialog : MutableLiveData<Boolean> = MutableLiveData()
     private val openCrustSelector :  MutableLiveData<List<Crust>> = MutableLiveData()
     private val openSizeSelector :  MutableLiveData<Crust> = MutableLiveData()
-    private val closeSizeSelector :  MutableLiveData<Int> = MutableLiveData()
 
+    //to handle price of current choice
     private val currentPrice : MutableLiveData<Size> = MutableLiveData()
-    private val totalPizzaInCart : MutableLiveData<String> = MutableLiveData<String>().apply { value="0" }
+
+    //to handle total pizza count in cart
+    private val totalPizzaCountInCart : MutableLiveData<String> = MutableLiveData<String>().apply { value="0" }
+
+    //to handle total order cost on cart page
     private val totalCost : MutableLiveData<String> = MutableLiveData<String>().apply { value="0" }
 
     private val navigateToMyCart :  MutableLiveData<Int> = MutableLiveData()
-    private val selectedPizza :  MutableLiveData<Crust> = MutableLiveData()
-     var defaultCrust : Crust ?=null
-
-
+    private var defaultCrust : Crust ?=null
     var pizzaRepository : PizzaReposiory?= null
     var pizzaResponseLiveData : LiveData<PizzaResponse>?= null
 
@@ -43,9 +51,6 @@ class MainViewModel() : ViewModel() {
         return pizzaResponseLiveData
     }
 
-    fun getParticularPizza(pos: Int) : Crust? {
-        return pizzaResponseLiveData?.value?.crusts?.get(pos)
-    }
 
     fun setCurrentPrice(size: Size){
         currentPrice.value=size
@@ -55,37 +60,8 @@ class MainViewModel() : ViewModel() {
         return currentPrice
     }
 
-     fun setTotalPizzaCounts(){
-        var alreadyCount= totalPizzaInCart.value?.toInt()
-        if (alreadyCount != null) {
-            alreadyCount=alreadyCount+1
-        }
-         totalPizzaInCart.value=alreadyCount.toString()
-
-         var prevTotalCost= totalCost.value?.toDouble()
-         if (prevTotalCost != null) {
-             prevTotalCost=prevTotalCost+currentPrice.value?.price!!
-         }
-         totalCost.value=prevTotalCost.toString()
-
-         val key = java.lang.StringBuilder()
-         key.append(openSizeSelector.value?.name).append("_").append(currentPrice.value?.name).append("_").append(currentPrice.value?.price)
-         if(pizzHashMap.containsKey(key.toString())){
-             val alreadyAddedPizza= pizzHashMap.get(key.toString())
-             alreadyAddedPizza?.quantity=alreadyAddedPizza?.quantity!!.plus(1)
-             pizzHashMap.put(key.toString(),alreadyAddedPizza)
-         }else{
-             lateinit var newAddedPizza : PizzaInCart
-             if(openSizeSelector.value!=null)
-                newAddedPizza= PizzaInCart(openSizeSelector.value?.id!!,openSizeSelector.value?.name!!,currentPrice.value?.name!!,currentPrice.value?.price!!,1)
-             else
-                 newAddedPizza= PizzaInCart(defaultCrust!!.id,defaultCrust!!.name,currentPrice.value?.name!!,currentPrice.value?.price!!,1)
-             pizzHashMap.put(key.toString(),newAddedPizza)
-         }
-    }
-
     fun getTotalPizzaCount() : LiveData<String>{
-        return totalPizzaInCart
+        return totalPizzaCountInCart
     }
 
     fun getTotalCost() : LiveData<String>{
@@ -104,8 +80,14 @@ class MainViewModel() : ViewModel() {
         return openSizeSelector
     }
 
-    fun getCloseSizeSelector(): LiveData<Int> {
-        return closeSizeSelector
+    fun getBackPressed(): LiveData<Boolean> {
+        return backPressed
+    }
+
+
+
+    fun getCloseCrustDialog(): LiveData<Boolean> {
+        return closeCrustDialog
     }
 
     fun getNavigateToMyCartFragment(): LiveData<Int> {
@@ -113,16 +95,9 @@ class MainViewModel() : ViewModel() {
     }
 
 
-    fun getSelectedPizza(): LiveData<Crust> {
-        return selectedPizza
-    }
-
     fun openCrustSelector() {
         openCrustSelector.value = pizzaResponseLiveData?.value?.crusts
-    }
-
-    fun addPizzaInCart() {
-        openCrustSelector.value = pizzaResponseLiveData?.value?.crusts
+        openSizeSelector.value=null
     }
 
     fun  openSizeSelector(sizes: Crust) {
@@ -139,33 +114,81 @@ class MainViewModel() : ViewModel() {
         pizzaAddedInCart.value= ArrayList<PizzaInCart>(pizzHashMap.values)
     }
 
-    fun closeSizeSelector() {
-       closeSizeSelector.value=1
+    fun onBackPressed(){
+        backPressed.value=true
+    }
+
+    fun setButtonEnableTrue() {
+         isButtonsEnabled.value=true
+    }
+
+    fun closeCrustDialog(){
+        closeCrustDialog.value=true
     }
 
     fun removePizzaFromCart(name :String,price : String,sizeName : String){
         val key = java.lang.StringBuilder()
-        key.append(name).append("_").append(sizeName).append("_").append(price)
+        key.append(name).append("_").append(sizeName)
         if(pizzHashMap.containsKey(key.toString())){
             val alreadyAddedPizza= pizzHashMap.get(key.toString())
             alreadyAddedPizza?.quantity=alreadyAddedPizza?.quantity!!.minus(1)
             if(alreadyAddedPizza.quantity==0)
-              pizzHashMap.remove(key.toString())
+                pizzHashMap.remove(key.toString())
 
+            // updated pizza list to show at cart page
             pizzaAddedInCart.value= ArrayList<PizzaInCart>(pizzHashMap.values)
 
-            var alreadyCount= totalPizzaInCart.value?.toInt()
-            if (alreadyCount != null) {
-                alreadyCount=alreadyCount-1
-            }
-            totalPizzaInCart.value=alreadyCount.toString()
-
-            var prevTotalCost= totalCost.value?.toDouble()
-            if (prevTotalCost != null) {
-                prevTotalCost=prevTotalCost - price.toDouble()
-            }
-            totalCost.value=prevTotalCost.toString()
+            updatePizzaCountInCart(false)
+            updateTotalCostInCart(false,price.toDouble())
         }
+    }
+
+    fun setTotalPizzaCounts(){
+        updatePizzaCountInCart(true)
+        updateTotalCostInCart(true,currentPrice.value?.price!!)
+
+        val key = java.lang.StringBuilder()
+        if(openSizeSelector.value!=null)
+            key.append(openSizeSelector.value?.name).append("_").append(currentPrice.value?.name)
+        else
+            key.append(defaultCrust?.name).append("_").append(currentPrice.value?.name)
+
+        if(pizzHashMap.containsKey(key.toString())){
+            val alreadyAddedPizza= pizzHashMap.get(key.toString())
+            alreadyAddedPizza?.quantity=alreadyAddedPizza?.quantity!!.plus(1)
+            pizzHashMap.put(key.toString(),alreadyAddedPizza)
+        }else{
+            lateinit var newAddedPizza : PizzaInCart
+            if(openSizeSelector.value!=null)
+                newAddedPizza= PizzaInCart(openSizeSelector.value?.id!!,openSizeSelector.value?.name!!,currentPrice.value?.name!!,currentPrice.value?.price!!,1)
+            else
+                newAddedPizza= PizzaInCart(defaultCrust!!.id,defaultCrust!!.name,currentPrice.value?.name!!,currentPrice.value?.price!!,1)
+            pizzHashMap.put(key.toString(),newAddedPizza)
+        }
+
+        closeCrustDialog()
+    }
+
+    fun updatePizzaCountInCart(toIncrease : Boolean){
+        var alreadyCount= totalPizzaCountInCart.value?.toInt()
+        if (alreadyCount != null) {
+            if(toIncrease) alreadyCount=alreadyCount+1
+            else alreadyCount=alreadyCount-1
+        }
+        totalPizzaCountInCart.value=alreadyCount.toString()
+    }
+
+    fun updateTotalCostInCart(toIncrease: Boolean, price: Double){
+        var prevTotalCost= totalCost.value?.toDouble()
+        if (prevTotalCost != null) {
+            if(toIncrease) prevTotalCost=prevTotalCost + price
+            else prevTotalCost=prevTotalCost - price
+        }
+        totalCost.value=prevTotalCost.toString()
+    }
+
+    fun isEnable() : LiveData<Boolean>{
+        return isButtonsEnabled
     }
 
 }

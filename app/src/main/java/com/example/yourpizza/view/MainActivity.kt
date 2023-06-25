@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
             ?.observe(this, Observer { it ->
                 navigateToMyCartFragment()
             })
+
+        mainViewModel?.getBackPressed()?.observe(this, Observer { onBackPressed() })
     }
 
     private fun navigateToMyCartFragment() {
