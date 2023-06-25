@@ -52,6 +52,10 @@ class MainViewModel() : ViewModel() {
         return pizzaResponseLiveData
     }
 
+    fun getServiceFailureUpdate(): LiveData<Boolean>{
+        return pizzaRepository?.getServiceFailureUpdate()!!
+    }
+
 
     fun setCurrentPrice(size: Size) {
         currentPrice.value = size
