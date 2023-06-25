@@ -40,9 +40,9 @@ class PizzaReposiory private constructor() : NetworkManagerCallback {
         netManager.getPizzaList()
 
         //to check service failure case
-//                android.os.Handler().postDelayed({
-//                   serviceFailueUpdate.value=true
-//                }, 4000)
+        //                android.os.Handler().postDelayed({
+        //                   serviceFailueUpdate.value=true
+        //                }, 4000)
 
 
        // storeDummyData()
