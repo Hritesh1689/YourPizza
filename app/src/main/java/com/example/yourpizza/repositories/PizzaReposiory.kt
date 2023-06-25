@@ -32,9 +32,15 @@ class PizzaReposiory private constructor() : NetworkManagerCallback {
     }
 
     fun getPizzaListfromServer() : LiveData<PizzaResponse> {
-//        val netManager = NetworkManager(this, application as Context)
-//        netManager.getPizzaList()
-        val jsonString = "{\"crusts\":[{\"defaultSize\":2,\"id\":1,\"name\":\"Hand-tossed\",\"sizes\":[{\"id\":1,\"name\":\"Regular\",\"price\":235.0},{\"id\":2,\"name\":\"Medium\",\"price\":265.0},{\"id\":3,\"name\":\"Large\",\"price\":295.0}]},{\"defaultSize\":1,\"id\":2,\"name\":\"Cheese Burst\",\"sizes\":[{\"id\":1,\"name\":\"Medium\",\"price\":295.0},{\"id\":2,\"name\":\"Large\",\"price\":325.0}]}],\"defaultCrust\":1,\"description\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\",\"isVeg\":false,\"name\":\"Non-Veg Pizza\"}"
+        val netManager = NetworkManager(this, application as Context)
+        netManager.getPizzaList()
+      //  storeDummyData()
+        return pizzaMutableLiveData
+    }
+
+    fun storeDummyData(){
+        val jsonString =
+            "{\"crusts\":[{\"defaultSize\":2,\"id\":1,\"name\":\"Hand-tossed\",\"sizes\":[{\"id\":1,\"name\":\"Regular\",\"price\":235.0},{\"id\":2,\"name\":\"Medium\",\"price\":265.0},{\"id\":3,\"name\":\"Large\",\"price\":295.0}]},{\"defaultSize\":1,\"id\":2,\"name\":\"Cheese Burst\",\"sizes\":[{\"id\":1,\"name\":\"Medium\",\"price\":295.0},{\"id\":2,\"name\":\"Large\",\"price\":325.0}]}],\"defaultCrust\":1,\"description\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\",\"isVeg\":false,\"name\":\"Non-Veg Pizza\"}"
         CoroutineScope(Dispatchers.IO).launch {
             val body: PizzaResponse = Gson().fromJson(
                 jsonString,
@@ -43,15 +49,14 @@ class PizzaReposiory private constructor() : NetworkManagerCallback {
 
             CoroutineScope(Dispatchers.Main).launch {
                 try {
-                  //  if (response.body() != null) {
-                        pizzaMutableLiveData.postValue(body)
-                  //  }
+                    //  if (response.body() != null) {
+                    pizzaMutableLiveData.postValue(body)
+                    //  }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
-        return pizzaMutableLiveData
     }
 
     override fun onSuccessCallback(response: Any?) {
